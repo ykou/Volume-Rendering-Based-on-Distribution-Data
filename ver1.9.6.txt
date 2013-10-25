@@ -1,0 +1,178 @@
+ver 1.9.6
+1. Fixed the bug, block size could be >= 6 now. 
+2. Implemented timer. Found the bottleneck is d_querySpanNew() 
+3. TODO: optimize d_querySpanNew()
+
+d_divideBlock(): 1.513248 ms
+d_allocateSpace(): 0.091360 ms
+d_queryBlockNew(): 0.677984 ms
+d_querySpanNew(): 194764.078125 ms
+d_computeBlock(): 2.868640 ms
+
+====================================================================
+
+ver 1.9.5
+1. Implemented sharedCornerHistogram to replace cornerHistogram.
+2. Now the block size could be 15, but the image is incorrect.
+3. The block size could not be 8. 
+4. TODO: optimize even more, try shared memory to replace more histogram. Maybe the reason is still about too large array.
+
+
+====================================================================
+
+ver 1.9.4
+1. implemented shared memory use. 
+2. solved race problem of shared memory, by using atomic function.
+3. TODO: change the large 3D array into shared memory.
+
+====================================================================
+
+ver 1.9.3
+1. changed the big for loop into parallel.
+2. TODO: fix th bug that block size could only be >= 16.
+3. TODO: implement loading raw data, convert to histogram, and compute.
+
+ver 1.9.2
+TODO: make the program robust for different dataset.
+
+====================================================================
+
+ver 1.9.1
+1. optimized the fixed block size volume rendering
+2. TODO: generate image for block size 8, 16
+
+
+====================================================================
+
+ver 1.9.0
+1. optimized the fixed block size volume rendering
+2. TODO: fix the fractal decoding bug
+
+====================================================================
+
+ver 1.8.4
+1. now we have some image, but looks not completely right.
+2. TODO: fix the bug.
+
+====================================================================
+
+ver 1.8.3
+1. now it can display image of entropy (texture is set to linear interpolation), the result seems incorrect, but pattern appears
+2. now it supports different block size, 10, 20 and 30 works, 5 doesn't work
+3. TODO: fix the bug why image looks incorrect
+4. TODO: dispaly mean and variance
+5. BUG and TODO in 1.7.5 may or may not remain.
+
+====================================================================
+
+ver 1.8.2
+1. now it can display image of entropy, just press keyboard 8
+2. we tried texture reference, texture object and surface object, they all work. But surface object doesn't work in volume rendering. We need to find out why.
+3. BUG and TODO in 1.7.5 remains.
+4. TODO: think about how to fit the texture into diffrent block size.
+
+====================================================================
+
+ver 1.8.1
+1. now it has the correct histogram data of block 13: spanLow(31, 31, 31), spanHigh(60, 60, 60)
+2. BUG and TODO in 1.7.5 remains.
+3. TODO: the same as 1.8
+
+====================================================================
+
+ver 1.8
+1. now the program can get entropy of each block. But still needs validate.
+2. BUG and TODO in 1.7.5 remains.
+3. TODO: think about how to bind the entropy data to a 3D texture.
+
+====================================================================
+
+ver 1.7.6
+1. implemented both fractal codebook look up and simple histogram look up
+2. change kernel structure, now each sub span is processed by a thread
+3. BUG and TODO in 1.7.5 remains.
+4. TODO: fractal decoding
+
+====================================================================
+
+ver 1.7.5
+1. implemented d_divideBlock function, which could divide the block by user
+2. CRITICAL BUG: in d_divideBlock we could not use the passed parameter, we can only declare parameter in that function.
+3. BUG and TODO in 1.7.5 remains.
+
+====================================================================
+
+ver 1.7.4
+1. implemented the histogram composision. Now the d_queryBlock function return the histogram of this block. 
+2. TODO: test whether this part of new code works or not.
+3. BUG in 1.7.3 remains.
+4. TODO in 1.7.3 remains.
+
+====================================================================
+
+ver 1.7.3
+1. the reason that program crushed was not looking up took too long, it was that we could not use "break" in the for loop.
+2. BUG in 1.7.1 remains.
+3. TODO: check if we could corectly look up codebook and simple codebook.
+4. TODO: think about if we need to sort the codebook by (spanLow, spanHigh), if yes, then the sorted codebook needs (32*7)*(32*7)*(32*7) size. 32 means the spanLow is always odd number, and the length is always power-of-two. Also, think about whether we are allowed to sort (reorganize) the codeook or not.
+5. NOTE: here the data size is 64*64*64, so tht the size of sorted codebook is acceptable, but what if the data size become large?
+
+====================================================================
+
+ver 1.7.2
+1. implemented linear codebook lookup using (spanLow, spanHigh) as index, but program crushed. Some error message is "system time out", some is "unknown". So I commented that par out.
+2. BUG in 1.7.1 remains.
+3. TODO: think about how to lookup codebook efficiently, hashtable or sorting codebook by (spanLow, spanHigh) are potential options.
+
+====================================================================
+
+ver 1.7.1
+1. merged d_decompose with d_queryBlock
+2. BUG in 1.7 remains
+3. TODO: lookup codebook and template based on span
+
+====================================================================
+
+ver 1.7
+1. implemented d_decompose function and d_queryBlock function.
+2. BUG in 1.6 remains
+3. TODO: call d_decompose in d_queryBlock
+
+====================================================================
+
+ver 1.6
+1. loaded domainList.bin (templates) to GPU
+2. BUG: program exit with errors, but we can do "start without debugging", we need to figure out what's wrong in this version.
+3. TODO: implement decompose.
+
+====================================================================
+
+ver 1.5
+1. loaded spanList.bin, codebook0.bin, nzbCounts0.bin, nzbFreqs0.bin, nzbBinIds0.bin to GPU
+2. TODO: load templates to GPU
+
+====================================================================
+
+ver 1.4
+1. Optimized interpolation, now it maintains a buffer for the eight corners and only updates it when necessary.
+2. We can increase the variable tstep to accelarate speed, but the image quality will decearse.
+3. This version is for the original draft of report.
+
+====================================================================
+
+ver 1.3
+1. Implemented trilinear interpolated original histogram volume rendering (pressing key 7). Now it looks not blocky anymore.
+2. Commented out fractal decoding part for speed up purpose.
+3. BUG: there's a vertical line and a horizental line on image.
+4. TODO: implement variance and entropy as well.
+5. Issue: the speed is slow, fps is less than 5.
+
+====================================================================
+
+this ver1.2 is for
+
+50*50*10 blocks, 32 bins, fractal
+50*50*10 blocks, 32 bins, original histogram
+
+Now the images looks pretty similar, but we need to be aware of the variance value, it seems not quite right.
+
