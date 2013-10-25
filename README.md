@@ -1,4 +1,4 @@
-Volume-Rendering-Based-on-Distribution-Data
+Volume Rendering Based on Distribution Data
 ===========================================
 
 Parallel Computing and Volume Rendering with CUDA.
